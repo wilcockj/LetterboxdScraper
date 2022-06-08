@@ -4,7 +4,7 @@ import sqlite3
 import re
 import random
 import time
-con = sqlite3.connect('movies.db')
+con = sqlite3.connect('example.db')
 cur = con.cursor()
 
 # Create table
@@ -17,9 +17,15 @@ def gatherandstoredata(site):
         img = x.find('img')
         title = img.get('alt')
         filmlink = x.div.get("data-target-link")
+        #checks if film is already in db
+        cur.execute('select * from movies where link = (?)',(filmlink,))
+        if cur.fetchone():
+            print(f"Found {title} in database already skipping")
+            continue
+
         movielink = "https://letterboxd.com/esi" + filmlink + "stats/"
         moviestat = requests.get("https://letterboxd.com/esi" + filmlink + "stats/")
-        #print(f"Querying {movielink}")
+        print(f"Querying {movielink}")
         #print(moviestat.content)
         likes = re.search(r'Liked by ([0-9].*?)&nbsp', str(moviestat.content))
         likes = likes.group(1)#int(likes.group(1).replace(',',''))
@@ -36,7 +42,7 @@ def gatherandstoredata(site):
         if toprating:
             toprating = int(toprating.group(1))
         else:
-            toprating = 0
+            toprating = 1000
         '''
         print(likes)
         print(watches)
