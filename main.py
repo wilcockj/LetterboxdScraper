@@ -4,7 +4,7 @@ import sqlite3
 import re
 import random
 import time
-con = sqlite3.connect('example.db')
+con = sqlite3.connect('movies.db')
 cur = con.cursor()
 
 # Create table
@@ -57,7 +57,6 @@ if __name__ == '__main__':
         con.commit()
     except sqlite3.OperationalError:
         print("table already created")
-    print("test")
 
     for x in range(100):
         print(f"Gathering data on page {x}")
